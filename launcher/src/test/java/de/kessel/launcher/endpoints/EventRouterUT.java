@@ -1,4 +1,5 @@
-package de.kessel.events.endpoints.router;
+package de.kessel.launcher.endpoints;
+
 
 import de.kessel.events.dto.EventRequestDto;
 import de.kessel.events.exception.EventNotFoundException;
@@ -11,13 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -28,13 +31,13 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static de.kessel.events.util.EventConstants.EVENTS_API;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static de.kessel.launcher.utils.EventConstants.EVENTS_API;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
-@SpringBootTest
+@SpringBootTest(classes = EventRouter.class)
+@ComponentScan(basePackages = {"de.kessel.events"})
 @AutoConfigureWebTestClient
 @ExtendWith(OutputCaptureExtension.class)
 class EventRouterUT {
@@ -198,65 +201,22 @@ class EventRouterUT {
                 .jsonPath("$.code").isEqualTo(ErrorDetail.REQUEST_BODY_IS_MISSING.getErrorCode());
     }
 
-//    @Test
-//    public void testUpdateEvent() {
-//        Mockito.when(eventServiceImpl.updateEvent(Mockito.anyString(), any(EventEntity.class))).thenReturn(Mono.just(testEventEntity));
-//
-//        webTestClient.put().uri(EVENTS_API + "/" + testEventEntity.getId())
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(Mono.just(testEventEntity), EventEntity.class)
-//                .exchange()
-//                .expectStatus().isOk()
-//                .expectBody(EventEntity.class).isEqualTo(testEventEntity);
-//
-//        Mockito.verify(eventServiceImpl).updateEvent(Mockito.anyString(), any(EventEntity.class));
-//    }
-
-
-//    @Test
-//    public void testRouteUpdateEvent() {
-//        client = WebTestClient.bindToRouterFunction(eventRouter.route(eventHandlerImpl)).build();
-//
-//        String id = "someTestId";
-//        EventRequestDto eventRequestDto = new EventRequestDto();
-//        // set fields of eventRequestDto here.
-//
-//        client.put()
-//                .uri(uriBuilder -> uriBuilder.path(EVENTS_API+"/{id}").build(id))
-//                .bodyValue(eventRequestDto)
-//                .exchange()
-//                .expectStatus().isOk()
-//                .expectBody(EventEntity.class);
-//    }
-//
-//    @Test
-//    public void testRouteDeleteEvent() {
-//        client = WebTestClient.bindToRouterFunction(eventRouter.route(eventHandlerImpl)).build();
-//
-//        String id = "someTestId";
-//
-//        client.delete()
-//                .uri(uriBuilder -> uriBuilder.path(EVENTS_API+"/{id}").build(id))
-//                .exchange()
-//                .expectStatus().isNoContent();
-//    }
-
     @Test
     public void testDeleteEvent() {
-//        when(eventServiceImpl.deleteEvent(Mockito.anyString())).thenReturn(Mono.empty());
-//
-//        webTestClient.delete().uri(EVENTS_API + "/" + testEventEntity.getId())
-//                .exchange()
-//                .expectStatus().isOk();
-//
-//        Mockito.verify(eventServiceImpl).deleteEvent(Mockito.anyString());
+        when(eventServiceMock.deleteEvent(Mockito.anyString())).thenReturn(Mono.empty());
+
+        webTestClient.delete().uri(EVENTS_API + "/" + testEventEntity.getId())
+                .exchange()
+                .expectStatus().isOk();
+
+        Mockito.verify(eventServiceMock).deleteEvent(Mockito.anyString());
     }
 
 //    @Test
 //    public void testGetSingleTranslation() {
 //        String lang = "en";
 //        String translation = "Test translation";
-//        Mockito.when(eventServiceImpl.getSingleTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn(Mono.just(translation));
+//        Mockito.when(eventServiceMock.getSingleTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn(Mono.just(translation));
 //
 //        webTestClient.get().uri("/api/v1/events" + testEvent.getId() + "/translations/" + lang)
 //                .exchange()

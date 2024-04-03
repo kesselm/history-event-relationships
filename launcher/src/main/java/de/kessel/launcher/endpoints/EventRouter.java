@@ -1,4 +1,4 @@
-package de.kessel.events.endpoints.router;
+package de.kessel.launcher.endpoints;
 
 import de.kessel.events.dto.EventRequestDto;
 import de.kessel.events.dto.EventResponseDto;
@@ -21,7 +21,8 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import static de.kessel.events.util.EventConstants.EVENTS_API;
+
+import static de.kessel.launcher.utils.EventConstants.EVENTS_API;
 
 @Configuration
 public class EventRouter {

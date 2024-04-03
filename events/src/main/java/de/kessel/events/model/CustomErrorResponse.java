@@ -1,5 +1,6 @@
 package de.kessel.events.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

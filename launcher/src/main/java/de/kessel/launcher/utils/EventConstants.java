@@ -1,4 +1,4 @@
-package de.kessel.events.util;
+package de.kessel.launcher.utils;
 
 import lombok.experimental.UtilityClass;
 

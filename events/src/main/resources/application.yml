@@ -1,0 +1,35 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration
+  application:
+    name: History-Event-Service
+
+udemy:
+   mongodb:
+    replicaset:
+            name: docker-rs
+            username: admin
+            password: admin
+            primary: mongo1
+            port: 9042            
+            database: history-event-db
+            authentication-database: admin
+
+server:
+  port: 8083
+  error:
+    include-message: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-doc/swagger-ui.html
+  api-docs:
+    path: /swagger-doc/v3/api-docs
+    groups:
+      enabled: true
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5p) %logger{4}.%M\\(%F:%L\\) - %yellow(%m%n)"
