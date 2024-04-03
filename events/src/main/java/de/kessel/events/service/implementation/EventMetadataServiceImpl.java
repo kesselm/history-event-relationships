@@ -32,9 +32,7 @@ public class EventMetadataServiceImpl implements EventMetadataService {
         eventMetadataEntity.setEpoche(epocheAsHtml);
         eventMetadataEntity.setReference(referenceAsHtml);
         eventMetadataEntity.setPlace(placeAsHtml);
-
-
-        return null;
+        return Mono.just(eventMetadataEntity);
     }
 
     @Override

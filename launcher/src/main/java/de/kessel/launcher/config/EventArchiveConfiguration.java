@@ -1,26 +1,19 @@
-package de.kessel.events.configuration;
+package de.kessel.launcher.config;
 
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
-import de.kessel.events.model.EventEntity;
-import de.kessel.events.model.Translation;
-import de.kessel.events.repository.EventRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import reactor.core.publisher.Flux;
-
-import java.util.List;
 
 @Configuration
 @Slf4j
 @EnableMongoRepositories(basePackages = "de.kessel.events.repository")
-public class EventArchievConfiguration extends AbstractReactiveMongoConfiguration {
+public class EventArchiveConfiguration extends AbstractReactiveMongoConfiguration {
 
     @Value("${udemy.mongodb.replicaset.name}")
     private String replicasetName;
@@ -39,9 +32,7 @@ public class EventArchievConfiguration extends AbstractReactiveMongoConfiguratio
 
     @Override
     public MongoClient reactiveMongoClient() {
-
         return MongoClients.create("mongodb://" + replicasetUsername + ":" + replicasetPassword + "@" + replicasetPrimary + ":" + replicasetPort + "/" + database + "?replicaSet=" + replicasetName + "&authSource=" + replicasetAuthenticationDb);
-
     }
 
     @Override
@@ -54,25 +45,25 @@ public class EventArchievConfiguration extends AbstractReactiveMongoConfiguratio
         return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
     }
 
-    @Bean
-    CommandLineRunner initDatabase(EventRepository repository) {
-        return args -> {
-            log.info("Start");
-            Flux.range(1, 10)
-                    .flatMap(i -> {
-                        Translation translation1 = Translation.builder().language("en").text("Hello World!").build();
-                        Translation translation2 = Translation.builder().language("de").text("Hallo Welt!").build();
-                        Translation translation3 = Translation.builder().language("zh").text("Nǐ hǎo shìjiè!").build();
-
-                        EventEntity eventEntity = EventEntity.builder()
-                                .id("id" + i)
-                                .text("Event " + i)
-                                .translations(List.of(translation1, translation2, translation3))
-                                .build();
-                        return repository.save(eventEntity)
-                                .doOnSuccess(e -> log.info("Saved {}", e.getId()));
-                    }).subscribe();
-            log.info("Ende");
-        };
-    }
+//    @Bean
+//    CommandLineRunner initDatabase(EventRepository repository) {
+//        return args -> {
+//            log.info("Start");
+//            Flux.range(1, 10)
+//                    .flatMap(i -> {
+//                        Translation translation1 = Translation.builder().language("en").text("Hello World!").build();
+//                        Translation translation2 = Translation.builder().language("de").text("Hallo Welt!").build();
+//                        Translation translation3 = Translation.builder().language("zh").text("Nǐ hǎo shìjiè!").build();
+//
+//                        EventEntity eventEntity = EventEntity.builder()
+//                                .id("id" + i)
+//                                .text("Event " + i)
+//                                .translations(List.of(translation1, translation2, translation3))
+//                                .build();
+//                        return repository.save(eventEntity)
+//                                .doOnSuccess(e -> log.info("Saved {}", e.getId()));
+//                    }).subscribe();
+//            log.info("Ende");
+//        };
+//    }
 }

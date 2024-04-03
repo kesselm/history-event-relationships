@@ -1,4 +1,4 @@
-package de.kessel.events.endpoints.handler.doc;
+package de.kessel.launcher.endpoints.handler.doc;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.reactive.function.server.ServerRequest;
