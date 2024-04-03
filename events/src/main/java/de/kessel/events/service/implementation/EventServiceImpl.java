@@ -1,6 +1,7 @@
 package de.kessel.events.service.implementation;
 
 import de.kessel.events.dto.EventRequestDto;
+import de.kessel.events.dto.EventResponseDto;
 import de.kessel.events.exception.EventNotFoundException;
 import de.kessel.events.model.CustomErrorResponse;
 import de.kessel.events.model.ErrorDetail;
@@ -8,6 +9,7 @@ import de.kessel.events.model.EventEntity;
 import de.kessel.events.model.Translation;
 import de.kessel.events.repository.EventRepository;
 import de.kessel.events.service.EventService;
+import de.kessel.events.util.EventConverter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.asciidoctor.Asciidoctor;
@@ -31,14 +33,16 @@ public class EventServiceImpl implements EventService {
     private final Asciidoctor asciidoctor;
 
     @Override
-    public Mono<EventEntity> createEvent(EventEntity eventEntity) {
-        String htmlContent = asciidoctor.convert(eventEntity.getText(), Options.builder().build());
+    public Mono<EventResponseDto> createEvent(EventRequestDto eventRequestDto) {
+        EventEntity eventEntity = EventConverter.convertToEventEntity(eventRequestDto);
+        String htmlContent = asciidoctor.convert(eventRequestDto.getText(), Options.builder().build());
         eventEntity.setText(htmlContent);
         eventEntity.getTranslations().forEach(translation -> {
                     String html = asciidoctor.convert(translation.getText(), Options.builder().build());
                     translation.setText(html);
                 });
-        return eventRepository.save(eventEntity);
+        Mono<EventEntity> savedEventEntity = eventRepository.save(eventEntity);
+        return savedEventEntity.map(EventConverter::convertToResponseDto);
     }
 
     @Override

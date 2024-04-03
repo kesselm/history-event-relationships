@@ -1,4 +1,4 @@
-package de.kessel.events.configuration;
+package de.kessel.events.config;
 
 import org.asciidoctor.Asciidoctor;
 import org.springframework.context.annotation.Bean;
