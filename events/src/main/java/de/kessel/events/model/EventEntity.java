@@ -22,5 +22,5 @@ public class EventEntity {
     @Schema(description = "Text of the Event", example = "Hallo")
     private String text;
     @Schema(description = "Translations of the Event", example = "{\"en\": \"hello\", \"fr\": \"bonjour\"}")
-    private List<Translation> translations;
+    private List<TranslationEntity> translations;
 }

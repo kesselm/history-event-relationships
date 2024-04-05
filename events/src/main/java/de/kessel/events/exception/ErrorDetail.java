@@ -1,4 +1,4 @@
-package de.kessel.events.model;
+package de.kessel.events.exception;
 
 import lombok.Getter;
 

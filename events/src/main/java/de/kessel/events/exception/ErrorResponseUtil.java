@@ -1,7 +1,7 @@
-package de.kessel.events.util;
+package de.kessel.events.exception;
 
-import de.kessel.events.model.CustomErrorResponse;
-import de.kessel.events.model.ErrorDetail;
+import de.kessel.events.exception.CustomErrorResponse;
+import de.kessel.events.exception.ErrorDetail;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 
@@ -11,7 +11,7 @@ import java.util.UUID;
 import static java.time.OffsetDateTime.now;
 
 @UtilityClass
-public class EventUtil {
+public class ErrorResponseUtil {
 
     public static String createErrorMessage(ErrorDetail errorDetail){
         return new StringBuilder(errorDetail.getErrorCode())

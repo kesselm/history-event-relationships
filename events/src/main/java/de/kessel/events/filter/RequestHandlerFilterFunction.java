@@ -2,8 +2,8 @@ package de.kessel.events.filter;
 
 import de.kessel.events.dto.EventRequestDto;
 import de.kessel.events.exception.MissingPropertyException;
-import de.kessel.events.model.CustomErrorResponse;
-import de.kessel.events.model.ErrorDetail;
+import de.kessel.events.exception.CustomErrorResponse;
+import de.kessel.events.exception.ErrorDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;

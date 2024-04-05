@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static de.kessel.launcher.utils.EventConstants.EVENTS_API;
@@ -59,9 +61,9 @@ public class EventRouter {
     })
     @Bean
     public RouterFunction<ServerResponse> route(EventHandlerImpl handler) {
-//        return RouterFunctions
-//                .route(RequestPredicates.POST(EVENTS_API)
-//                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createEvent)
+        return RouterFunctions
+                .route(RequestPredicates.POST(EVENTS_API)
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_OCTET_STREAM)), handler::createEvent);
 //               // .filter(new RequestHandlerFilterFunction())
 //                .andRoute(RequestPredicates.GET(EVENTS_API)
 //                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::getAllEvents)
@@ -71,6 +73,5 @@ public class EventRouter {
 //                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteEventById)
 //                .andRoute(RequestPredicates.PUT(EVENTS_API + "/{id}")
 //                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::updateEventById);
-        return null;
     }
 }

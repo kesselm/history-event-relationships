@@ -1,87 +1,86 @@
-//package de.kessel.launcher.endpoints;
-//
-//
-//import de.kessel.events.dto.EventRequestDto;
-//import de.kessel.events.exception.EventNotFoundException;
-//import de.kessel.events.model.CustomErrorResponse;
-//import de.kessel.events.model.ErrorDetail;
-//import de.kessel.events.model.EventEntity;
-//import de.kessel.events.model.Translation;
-//import de.kessel.events.service.implementation.EventServiceImpl;
-//import de.kessel.launcher.endpoints.router.EventRouter;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.Mockito;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.boot.test.system.CapturedOutput;
-//import org.springframework.boot.test.system.OutputCaptureExtension;
-//import org.springframework.context.annotation.ComponentScan;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.reactive.server.WebTestClient;
-//import reactor.core.publisher.Flux;
-//import reactor.core.publisher.Mono;
-//
-//import java.time.OffsetDateTime;
-//import java.util.List;
-//import java.util.UUID;
-//
-//import static de.kessel.launcher.utils.EventConstants.EVENTS_API;
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.when;
-//
-//@SpringBootTest(classes = EventRouter.class)
-//@ComponentScan(basePackages = {"de.kessel.events"})
-//@AutoConfigureWebTestClient
-//@ExtendWith(OutputCaptureExtension.class)
-//class EventRouterUT {
-//
-//    @Autowired
-//    private WebTestClient webTestClient;
-//    @MockBean
-//    private EventServiceImpl eventServiceMock;
-//    private EventEntity testEventEntity;
-//    private EventRequestDto eventRequestDto;
-//    private Translation translation;
-//
-//
-//    @BeforeEach
-//    public void setup() {
-//        translation = Translation.builder()
-//                .language("en")
-//                .text("Hello World!")
-//                .build();
-//        testEventEntity = EventEntity.builder()
-//                .id("1")
-//                .text("Hallo Welt")
-//                .translations(List.of(translation))
-//                .build();
-//        eventRequestDto = EventRequestDto.builder()
-//                .text("Hallo Welt!")
-//                .translations(List.of(translation))
-//                .build();
-//    }
-//
-//    @Test
-//    @DisplayName("Event could be created.")
-//    void createEvent_test_should_return_is_created_status() {
-//        when(eventServiceMock.createEvent(any())).thenReturn(Mono.just(testEventEntity));
-//
-//        webTestClient.post().uri(EVENTS_API)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(Mono.just(eventRequestDto), EventRequestDto.class)
-//                .exchange()
-//                .expectStatus().isCreated()
-//                .expectBody()
-//                .jsonPath("$.id").isNotEmpty();
-//    }
-//
+package de.kessel.launcher.endpoints.router;
+
+import de.kessel.events.dto.EventRequestDto;
+import de.kessel.events.dto.EventResponseDto;
+import de.kessel.events.dto.TranslationRequestDto;
+import de.kessel.events.dto.TranslationResponseDto;
+import de.kessel.events.service.EventService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+import static de.kessel.launcher.utils.EventConstants.EVENTS_API;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+
+@SpringBootTest
+@ComponentScan(basePackages = {"de.kessel.events.*"})
+//@Import(TestConfig.class)
+@AutoConfigureWebTestClient
+//@WebFluxTest(controllers = EventRouter.class)
+@ExtendWith(OutputCaptureExtension.class)
+class EventRouterUT {
+
+    @Autowired
+    private WebTestClient webTestClient;
+    @MockBean
+    private EventService eventServiceMock;
+    private EventRequestDto eventRequestDto;
+    private EventResponseDto eventResponseDto;
+    private TranslationResponseDto translationResponseDto;
+    private TranslationRequestDto translationRequestDto;
+
+
+    @BeforeEach
+    public void setup() {
+        // Request
+        translationRequestDto = TranslationRequestDto.builder()
+                .language("en")
+                .text("Hello World")
+                .build();
+        eventRequestDto = EventRequestDto.builder()
+                .text("Hallo Welt!")
+                .translations(List.of(translationRequestDto))
+                .build();
+
+        // Response
+        translationResponseDto = new TranslationResponseDto();
+        translationResponseDto.setLanguage("en");
+        translationResponseDto.setText("Hello World!");
+
+        eventResponseDto = new EventResponseDto();
+        eventResponseDto.setId("1");
+        eventResponseDto.setText("Test Text");
+        eventResponseDto.setTranslations(List.of(translationResponseDto));
+    }
+
+    @Test
+    @DisplayName("Event could be created.")
+    void createEvent_test_should_return_is_created_status() {
+        when(eventServiceMock.createEvent(any())).thenReturn(Mono.just(eventResponseDto));
+
+        webTestClient.post().uri(EVENTS_API)
+                //.contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(eventRequestDto), EventRequestDto.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty();
+    }
+
 //    @Test
 //    @DisplayName("Event could not be created.")
 //    void createEvent_test_should_return_is_bad_request_status(CapturedOutput output) {
@@ -100,7 +99,7 @@
 //
 //        assertThat(output.getOut()).contains(ErrorDetail.REQUEST_MISSING_PROPERTY.getErrorMessage());
 //    }
-//
+
 //    @Test
 //    @DisplayName("List of Events is shown.")
 //    void findAll_test_should_return_is_ok_status() {
@@ -113,7 +112,7 @@
 //                .expectBodyList(EventRequestDto.class)
 //                .hasSize(1);
 //    }
-//
+
 //    @Test
 //    @DisplayName("No Event is found.")
 //    void findAll_test_should_return_no_content_status() {
@@ -126,7 +125,7 @@
 //                .expectBodyList(EventRequestDto.class)
 //                .hasSize(0);
 //    }
-//
+
 //    @Test
 //    @DisplayName("Event by Id should be returned.")
 //    void findById_test_should_return_is_ok_status() {
@@ -139,7 +138,7 @@
 //                .jsonPath("$.id").isNotEmpty()
 //                .jsonPath("$.id").isEqualTo("1");
 //    }
-//
+
 //    @Test
 //    @DisplayName("Event could not be found.")
 //    void findById_test_should_return_no_content_status() {
@@ -160,8 +159,8 @@
 //                .exchange()
 //                .expectStatus().isNoContent();
 //    }
-//
-//
+
+
 //    @Test
 //    @DisplayName("Event should be updated.")
 //    void update_test_should_return_http_status_ok() {
@@ -177,7 +176,7 @@
 //                .jsonPath("$.id").isNotEmpty()
 //                .jsonPath("$.id").isEqualTo("1");
 //    }
-//
+
 //    @Test
 //    @DisplayName("Event should be updated.")
 //    void update_test_should_return_http_status_ok2() {
@@ -200,7 +199,7 @@
 //                .jsonPath("$.code").isNotEmpty()
 //                .jsonPath("$.code").isEqualTo(ErrorDetail.REQUEST_BODY_IS_MISSING.getErrorCode());
 //    }
-//
+
 //    @Test
 //    public void testDeleteEvent() {
 //        when(eventServiceMock.deleteEvent(Mockito.anyString())).thenReturn(Mono.empty());
@@ -211,19 +210,19 @@
 //
 //        Mockito.verify(eventServiceMock).deleteEvent(Mockito.anyString());
 //    }
+
+//    @Test
+//    public void testGetSingleTranslation() {
+//        String lang = "en";
+//        String translation = "Test translation";
+//        Mockito.when(eventServiceMock.getSingleTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn(Mono.just(translation));
 //
-////    @Test
-////    public void testGetSingleTranslation() {
-////        String lang = "en";
-////        String translation = "Test translation";
-////        Mockito.when(eventServiceMock.getSingleTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn(Mono.just(translation));
-////
-////        webTestClient.get().uri("/api/v1/events" + testEvent.getId() + "/translations/" + lang)
-////                .exchange()
-////                .expectStatus().isOk()
-////                .expectBody(String.class).isEqualTo(translation);
-////
-////        Mockito.verify(eventServiceImpl).getSingleTranslation(Mockito.anyString(), Mockito.anyString());
-////    }
+//        webTestClient.get().uri("/api/v1/events" + testEvent.getId() + "/translations/" + lang)
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectBody(String.class).isEqualTo(translation);
 //
-//}
+//        Mockito.verify(eventServiceImpl).getSingleTranslation(Mockito.anyString(), Mockito.anyString());
+//    }
+
+}

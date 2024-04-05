@@ -1,6 +1,5 @@
 package de.kessel.events.exception;
 
-import de.kessel.events.model.ErrorDetail;
 import io.vavr.Tuple;
 import io.vavr.Tuple3;
 import org.springframework.boot.autoconfigure.web.WebProperties;

@@ -1,6 +1,5 @@
 package de.kessel.events.exception;
 
-import de.kessel.events.model.CustomErrorResponse;
 import lombok.Getter;
 
 import java.io.Serializable;

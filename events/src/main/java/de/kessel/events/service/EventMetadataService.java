@@ -2,7 +2,7 @@ package de.kessel.events.service;
 
 import de.kessel.events.dto.EventRequestDto;
 import de.kessel.events.model.EventMetadataEntity;
-import de.kessel.events.model.Translation;
+import de.kessel.events.model.TranslationEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -17,5 +17,5 @@ public interface EventMetadataService {
 
     Flux<EventMetadataEntity> getAllEventsMetadata();
 
-    Mono<Translation> getSingleTranslation(String id, String lang);
+    Mono<TranslationEntity> getSingleTranslation(String id, String lang);
 }
