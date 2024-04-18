@@ -1,0 +1,13 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: docker-compose.yml
+  data:
+    mongodb:
+      database: history-event-db
+      port: 27017
+      host: localhost
+      auto-index-creation: true
+      username: admin2
+      password: admin2

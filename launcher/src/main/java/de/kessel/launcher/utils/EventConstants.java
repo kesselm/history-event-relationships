@@ -10,7 +10,11 @@ public class EventConstants {
 
     public static final String EVENTS = "/events";
 
+    public static final String TRANSLATION = "/translation";
+
     public static final String V1_API = BASE_API + VERSION;
 
     public static final String EVENTS_API = V1_API + EVENTS;
+
+    public static final String TRANSLATION_API = V1_API + TRANSLATION;
 }

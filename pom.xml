@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -28,58 +28,53 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openapi.version>1.7.0</openapi.version>
-        <swagger2.version>3.0.0</swagger2.version>
+        <openapi.version>2.0.3</openapi.version>
         <json.version>20240303</json.version>
-        <lombok.version>1.18.32</lombok.version>
+        <kotlin.version>1.9.23</kotlin.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-webflux</artifactId>
-                <version>3.2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-devtools</artifactId>
-                <version>3.2.3</version>
-                <scope>runtime</scope>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-                <version>3.2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-validation</artifactId>
-                <version>3.2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>3.2.3</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-                <version>2.0.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-test</artifactId>
-                <version>3.6.2</version>
-                <scope>test</scope>
+                <version>${openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.json</groupId>
@@ -102,37 +97,64 @@
                 <version>3.14.0</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.16.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>2.16.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>2.16.1</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.xml.bind</groupId>
-                <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>2.3.3</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>2.2.11</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.3.3</version>
-                <scope>runtime</scope>
+                <groupId>de.kessel.history.events.archive</groupId>
+                <artifactId>events</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!--    <dependencies>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-stdlib-jdk8</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-test</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--            <scope>test</scope>-->
+    <!--        </dependency>-->
+    <!--    </dependencies>-->
+
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--&lt;!&ndash;            <plugin>&ndash;&gt;-->
+    <!--                <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--                <artifactId>kotlin-maven-plugin</artifactId>-->
+    <!--                <version>${kotlin.version}</version>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <id>compile</id>-->
+    <!--                        <phase>compile</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>compile</goal>-->
+    <!--                        </goals>-->
+    <!--                    </execution>-->
+    <!--                    <execution>-->
+    <!--                        <id>test-compile</id>-->
+    <!--                        <phase>test-compile</phase>-->
+    <!--                        <goals>-->
+    <!--                            <goal>test-compile</goal>-->
+    <!--                        </goals>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--                <configuration>-->
+    <!--                    <jvmTarget>1.8</jvmTarget>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -3,7 +3,6 @@ package de.kessel.events.config;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
@@ -15,29 +14,28 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "de.kessel.events.repository")
 public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
-    @Value("${udemy.mongodb.replicaset.name}")
-    private String replicasetName;
-    @Value("${udemy.mongodb.replicaset.username}")
-    private String replicasetUsername;
-    @Value("${udemy.mongodb.replicaset.password}")
-    private String replicasetPassword;
-    @Value("${udemy.mongodb.replicaset.primary}")
-    private String replicasetPrimary;
-    @Value("${udemy.mongodb.replicaset.port}")
-    private String replicasetPort;
-    @Value("${udemy.mongodb.replicaset.database}")
-    private String database;
-    @Value("${udemy.mongodb.replicaset.authentication-database}")
-    private String replicasetAuthenticationDb;
+    private ApplicationProperties properties;
+
+    public MongoConfig(ApplicationProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public MongoClient reactiveMongoClient() {
-        return MongoClients.create("mongodb://" + replicasetUsername + ":" + replicasetPassword + "@" + replicasetPrimary + ":" + replicasetPort + "/" + database + "?replicaSet=" + replicasetName + "&authSource=" + replicasetAuthenticationDb);
+        StringBuilder settings = new StringBuilder("mongodb://")
+                .append(properties.getUsername())
+                .append(":")
+                .append(properties.getPassword())
+                .append("@")
+                .append(properties.getHost())
+                .append(":")
+                .append(properties.getPort());
+        return MongoClients.create(settings.toString());
     }
 
     @Override
     protected String getDatabaseName() {
-        return database;
+        return properties.getDatabase();
     }
 
     @Bean

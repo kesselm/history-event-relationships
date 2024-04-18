@@ -1,8 +1,8 @@
 package de.kessel.events.service;
 
-import de.kessel.events.dto.EventRequestDto;
 import de.kessel.events.dto.TranslationRequestDto;
 import de.kessel.events.dto.TranslationResponseDto;
+import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,10 +12,12 @@ public interface TranslationService {
 
     Mono<TranslationResponseDto> findTranslationById(String id);
 
-    Mono<TranslationResponseDto> updateTranslation(String id, EventRequestDto eventEntity);
+    Flux<TranslationResponseDto> findAllTranslation();
+
+    Mono<TranslationResponseDto> updateTranslation(String id, TranslationRequestDto translationRequestDto);
 
     Mono<Void> deleteTranslationById(String id);
 
-    Flux<TranslationResponseDto> findAllTranslation();
+    Flux<TranslationResponseDto> findAllTranslationsAndPagination(Pageable pageable);
 
 }

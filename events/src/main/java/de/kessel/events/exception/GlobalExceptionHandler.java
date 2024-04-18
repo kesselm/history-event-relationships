@@ -46,18 +46,22 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
         Throwable error = getError(request);
 
         Tuple3<String, String, HttpStatus> message = switch (error) {
-            case MissingPropertyException customException ->
+            case PropertyValidationException customException ->
                     Tuple.of(ErrorDetail.REQUEST_MISSING_PROPERTY.getErrorCode(),
                             ErrorDetail.REQUEST_MISSING_PROPERTY.getErrorMessage(),
-                            ((MissingPropertyException) error).getErrorResponse().getStatus());
+                            ((PropertyValidationException) error).getErrorResponse().getStatus());
             case EventNotFoundException eventNotFoundException ->
-                    Tuple.of(ErrorDetail.EVENT_NOT_FOUND.getErrorCode(),
-                            String.format(ErrorDetail.EVENT_NOT_FOUND.getErrorMessage(), request.pathVariable("id")),
+                    Tuple.of(ErrorDetail.EVENT_METADATA_NOT_FOUND.getErrorCode(),
+                            String.format(ErrorDetail.EVENT_METADATAS_NOT_FOUND.getErrorMessage(), request.pathVariable("id")),
                             ((EventNotFoundException) error).getErrorResponse().getStatus());
             case MissingBodyException missingBodyException ->
                     Tuple.of(ErrorDetail.REQUEST_BODY_IS_MISSING.getErrorCode(),
                             ErrorDetail.REQUEST_BODY_IS_MISSING.getErrorMessage(),
                             ((MissingBodyException)error).getErrorResponse().getStatus());
+            case TranslationNotFoundException translationNotFoundException ->
+                Tuple.of(ErrorDetail.TRANSLATION_NOT_FOUND.getErrorCode(),
+                        ErrorDetail.TRANSLATION_NOT_FOUND.getErrorMessage(),
+                        ((TranslationNotFoundException)error).getErrorResponse().getStatus());
             default -> Tuple.of("n/a", "n/a",HttpStatus.INTERNAL_SERVER_ERROR);
         };
 

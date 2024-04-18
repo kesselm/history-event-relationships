@@ -1,0 +1,16 @@
+{
+  "id": "661198e1abc62e59fc1bf9a7",
+  "text": "<div class=\"paragraph\"><p>Wie geht es dir?</p></div>",
+  "translations": [
+    {
+      "id": null,
+      "language": "en",
+      "text": "<div class=\"paragraph\"><p>How are <strong>you</strong>?</p></div>"
+    },
+    {
+      "id": null,
+      "language": "zh",
+      "text": "<div class=\"paragraph\"><p>nĭ hăo ma?</p></div>"
+    }
+  ]
+}

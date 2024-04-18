@@ -1,7 +1,5 @@
 package de.kessel.events.exception;
 
-import de.kessel.events.exception.CustomErrorResponse;
-import de.kessel.events.exception.ErrorDetail;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 

@@ -2,17 +2,28 @@ package de.kessel.events.exception;
 
 import lombok.Getter;
 
+import static de.kessel.events.exception.ErrorConstants.*;
+
 public enum ErrorDetail {
-    EVENT_NOT_FOUND("E-001", "Event not found with ID: %s"),
-    REQUEST_MISSING_PROPERTY("E-002", "Text property is missing."),
-    REQUEST_NO_EVENT_CREATED("E-003", "Event could not be created."),
-    REQUEST_INTERNAL_ERROR("E-004", "Something went wrong"),
-    REQUEST_BODY_IS_MISSING("E-005", "Request Body is missing.");
+    EVENT_METADATA_NOT_FOUND("E-001", EVENT_METADATA_NOT_FOUND_MESSAGE),
+    EVENT_METADATAS_NOT_FOUND("E-007", EVENT_METADATAS_NOT_FOUND_MESSAGE),
+    EVENT_NOT_FOUND("E-008", EVENT_NOT_FOUND_MESSAGE),
+    TRANSLATION_NOT_FOUND("T-001", TRANSLATION_NOT_FOUND_MESSAGE),
+    REQUEST_MISSING_PROPERTY("E-002", REQUEST_MISSING_PROPERTY_MESSAGE),
+    REQUEST_NO_EVENT_CREATED("E-003", REQUEST_NO_EVENT_CREATED_MESSAGE),
+    REQUEST_INTERNAL_ERROR("E-004", REQUEST_INTERNAL_ERROR_MESSAGE),
+    REQUEST_BODY_IS_MISSING("E-005", REQUEST_BODY_IS_MISSING_MESSAGE),
+    EVENT_COULD_NOT_BE_UPDATED("E-006", EVENT_COULD_NOT_BE_UPDATED_MESSAGE),
+    VALIDATION_YEAR("V-001", VALIDATION_YEAR_MESSAGE),
+    VALIDATION_TRANSLATION_ID("V-002", VALIDATION_TRANSLATION_ID_MESSAGE),
+    VALIDATION_MIN("V-003", VALIDATION_MIN_MESSAGE),
+    VALIDATION_MAX("V-004", VALIDATION_MAX_MESSAGE),
+    VALIDATION_LANGUAGE("V-005", VALIDATION_LANGUAGE_MESSAGE);
 
     @Getter
-    private String errorCode;
+    private final String errorCode;
     @Getter
-    private String errorMessage;
+    private final String errorMessage;
 
     ErrorDetail(String errorCode, String errorMessage) {
         this.errorCode = errorCode;

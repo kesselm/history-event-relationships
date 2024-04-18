@@ -7,7 +7,6 @@ import de.kessel.events.model.EventEntity;
 import de.kessel.events.model.TranslationEntity;
 import de.kessel.events.repository.EventRepository;
 import de.kessel.events.service.EventService;
-import de.kessel.events.util.EntityConverter;
 import org.asciidoctor.Asciidoctor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,19 +56,17 @@ class EventServiceImplUT {
     @DisplayName("Response should be a created event.")
     void createEvent_test_should_return_a_created_event() {
         EventRequestDto eventRequestDto = EventRequestDto.builder()
-                .text("*abc*")
-                .translations(List.of(translationRequestDto)).build();
+                .translationsIds(List.of("translation_1")).build();
         var text = "It went through";
         EventEntity eventEntity = EventEntity.builder()
                 .id("1")
-                .text(text)
-                .translations(List.of(EntityConverter.convertToTranslationEntity(translationRequestDto))).build();
+                .translationIds(List.of("translation_1")).build();
 
         when(eventRepositoryMock.save(any(EventEntity.class)))
                 .thenReturn(Mono.just(eventEntity));
 
         StepVerifier.create(sut.createEvent(eventRequestDto))
-                .consumeNextWith(r -> r.getText().contains(text))
+                .assertNext(r -> assertThat(r.getTranslationIds().size()))
                 .verifyComplete();
     }
 
@@ -77,13 +74,12 @@ class EventServiceImplUT {
     @DisplayName("The Response should return the found event.")
     void findEventById_test_should_return_an_event() {
         var eventEntityId = "008";
-        var text = "test1";
         EventEntity eventEntity = EventEntity.builder()
-                .id(eventEntityId).text(text).build();
+                .id(eventEntityId).build();
         when(eventRepositoryMock.findById(eq(eventEntityId))).thenReturn(Mono.just(eventEntity));
 
         StepVerifier.create(sut.findEventById(eventEntityId))
-                .consumeNextWith(r -> assertThat(r.getText()).isEqualTo(text))
+                .consumeNextWith(r -> assertThat(r.getId()).isEqualTo(eventEntityId))
                 .verifyComplete();
     }
 
@@ -91,12 +87,11 @@ class EventServiceImplUT {
     @DisplayName("The Response should return all events.")
     void findAllEvents_test_should_return_all_events() {
         EventEntity eventEntity = EventEntity.builder()
-                .id("007")
-                .text("test1").build();
+                .id("007").build();
         when(eventRepositoryMock.findAll()).thenReturn(Flux.just(eventEntity));
 
         StepVerifier.create(sut.findAllEvents())
-                .expectNextMatches(event -> event.getText().equals("test1"))
+                .expectNextMatches(event -> event.getId().equals("007"))
                 .expectComplete()
                 .verify();
     }
@@ -107,7 +102,6 @@ class EventServiceImplUT {
         var eventEntityId1 = "009";
         var eventEntityId2 = "010";
         var text1 = "test2";
-        var text2 = "test3";
         Map<String, String> translations = Map.of("en", "example");
 
         TranslationRequestDto translation = TranslationRequestDto.builder()
@@ -116,14 +110,12 @@ class EventServiceImplUT {
                 .build();
 
         EventRequestDto eventRequestDto = EventRequestDto.builder()
-                .text(text1)
-                .translations(List.of(translation))
+                .translationsIds(List.of("translation_2"))
                 .build();
-        Mono<EventEntity> originalEventEntity = Mono.just(EventEntity.builder().text(text1).id(eventEntityId1).build());
-        EventEntity updateEventEntity = EventEntity.builder().text(text2).id(eventEntityId2).build();
+        Mono<EventEntity> originalEventEntity = Mono.just(EventEntity.builder().id(eventEntityId1).build());
+        EventEntity updateEventEntity = EventEntity.builder().id(eventEntityId2).build();
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(eventEntityId2);
-        eventResponseDto.setText(text2);
 
         when(eventRepositoryMock.findById(anyString())).thenReturn(originalEventEntity);
         when(eventRepositoryMock.save(any())).thenReturn(Mono.just(updateEventEntity));
@@ -133,31 +125,22 @@ class EventServiceImplUT {
                 .verifyComplete();
     }
 
-    @Test
-    void shouldGetSingleTranslation() {
-
-        when(eventRepositoryMock.findById(eq("011"))).thenReturn(Mono.just(createTranslations()));
-
-        StepVerifier.create(sut.getSingleTranslation("011", "en"))
-                .consumeNextWith(e -> assertThat(e.getText()).isEqualTo(englishText))
-                .verifyComplete();
-    }
-
     private EventEntity createTranslations() {
 
         TranslationEntity translation1 = TranslationEntity.builder()
+                .id("translation_1")
                 .language("en")
                 .text(englishText).build();
 
         TranslationEntity translation2 = TranslationEntity.builder()
+                .id("translation_2")
                 .language("zh")
                 .text(chineseText)
                 .build();
 
         EventEntity event = EventEntity.builder()
                 .id("011")
-                .text("Wie geht es dir?")
-                .translations(List.of(translation1, translation2))
+                .translationIds(List.of(translation1.getId(), translation2.getId()))
                 .build();
         return event;
     }
