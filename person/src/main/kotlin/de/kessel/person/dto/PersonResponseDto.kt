@@ -1,12 +1,9 @@
-package de.kessel.person.entity
+package de.kessel.person.dto
 
-import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
-import java.util.*
 
-@Document(collection = "People")
-data class Person(
-    val id: String = "person_" + UUID.randomUUID().toString(),
+data class PersonResponseDto(
+    val id: String,
     val firstname: String,
     val lastname: String,
     val alternativeName: String,
