@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Slf4j
+@ComponentScan(basePackages = {"de.kessel.events"})
 public class TranslationServiceImpl implements TranslationService {
 
     private final TranslationRepository translationRepository;

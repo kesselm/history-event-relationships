@@ -17,7 +17,6 @@ public class ErrorMessageUtil {
     public static String getErrorMessage(String id, ErrorDetail errorDetail) {
         String errorMessage = new StringBuilder(errorDetail.getErrorCode())
                 .append(" - ").append(String.format(errorDetail.getErrorMessage(), id)).toString();
-        log.info(errorMessage);
         return errorMessage;
     }
 

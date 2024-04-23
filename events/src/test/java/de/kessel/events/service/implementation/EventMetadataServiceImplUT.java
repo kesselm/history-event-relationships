@@ -1,6 +1,7 @@
 package de.kessel.events.service.implementation;
 
 import de.kessel.events.dto.EventMetadataRequestDto;
+import de.kessel.events.dto.EventMetadataResponseDto;
 import de.kessel.events.exception.ErrorDetail;
 import de.kessel.events.exception.EventNotFoundException;
 import de.kessel.events.exception.PropertyValidationException;
@@ -10,6 +11,7 @@ import de.kessel.events.util.EventUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.asciidoctor.Asciidoctor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,12 +22,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
 import java.util.Locale;
 
 import static de.kessel.events.exception.ErrorConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringJUnitConfig
@@ -48,13 +50,15 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for year AD for germany.")
     void test_should_return_just_a_year() {
         var year = EventUtil.createDate(2024, 0, 0, Locale.GERMANY);
 
-        assertThat(year).isEqualTo("2024");
+        assertThat(year).isEqualTo("2024 n. Chr.");
     }
 
     @Test
+    @DisplayName("Test for year BC for germany.")
     void test_should_return_just_a_negativ_year_in_german() {
         var year = EventUtil.createDate(-210, 0, 0, Locale.GERMANY);
 
@@ -62,6 +66,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for year BC for english.")
     void test_should_return_just_a_negativ_year_in_english() {
         var year = EventUtil.createDate(-210, 0, 0, Locale.ENGLISH);
 
@@ -69,6 +74,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for full date in german.")
     void test_should_return_just_a_negativ_date_in_german() {
         var year = EventUtil.createDate(-210, 3, 12, Locale.GERMAN);
 
@@ -76,6 +82,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for validate EventMetadataRequest creation.")
     void test_should_validate_the_correct_date_and_eventId() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -88,6 +95,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for year validation on EventMetadataRequest.")
     void test_should_validate_the_year() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .eventId(EVENT_ID)
@@ -97,6 +105,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for day validation on EventMetadataRequest.")
     void test_should_validate_the_day_range() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -108,6 +117,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for day validation on EventMetadataRequest.")
     void test_should_validate_the_day_if_positive() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -119,6 +129,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for month validation ond EventMetadataRequest.")
     void test_should_validate_the_month_range() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -130,6 +141,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for month validation on EventMetadataRequest.")
     void test_should_validate_the_month_if_positive() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -141,6 +153,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for eventId validation on EventMetadataRequest.")
     void test_should_validate_eventId_if_not_set() {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -150,6 +163,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for EventMetadataRequest creation.")
     void test_should_create_eventMetadata_object_without_error() {
         var eventMetadataEntity = EventMetadataEntity.builder().build();
         eventMetadataEntity.setYear(2024);
@@ -169,6 +183,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error logging on EventMetadataRequest for year.")
     void test_should_log_error_on_eventMetadata_creation_for_no_year(CapturedOutput output) {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .eventId(EVENT_ID)
@@ -181,11 +196,12 @@ class EventMetadataServiceImplUT {
                 })
                 .verify();
 
-      assertThat(output.getOut()).contains(ErrorDetail.VALIDATION_YEAR.getErrorCode() + " - "
-              + ErrorDetail.VALIDATION_YEAR.getErrorMessage());
+        assertThat(output.getOut()).contains(ErrorDetail.VALIDATION_YEAR.getErrorCode() + " - "
+                + ErrorDetail.VALIDATION_YEAR.getErrorMessage());
     }
 
     @Test
+    @DisplayName("Test for error logging on EventMetadataRequest for eventId.")
     void test_should_log_error_on_eventMetadata_creation_for_no_eventId(CapturedOutput output) {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -203,6 +219,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error logging on EventMetadataRequest on day.")
     void test_should_log_error_on_eventMetadata_creation_for_negative_day(CapturedOutput output) {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -222,6 +239,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error logging on EventMetadataRequest on day.")
     void test_should_log_error_on_eventMetadata_creation_for_wrong_day(CapturedOutput output) {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -241,6 +259,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error logging on EventMetadataRequest on month.")
     void test_should_log_error_on_eventMetadata_creation_for_wrong_month(CapturedOutput output) {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -260,6 +279,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error logging on EventMetadataRequest on month.")
     void test_should_log_error_on_eventMetadata_creation_for_negativ_month(CapturedOutput output) {
         var eventMetadataRequestDto = EventMetadataRequestDto.builder()
                 .year(2024)
@@ -279,6 +299,7 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error on find EventMetadata by id.")
     void findEventMetadataById_should_return_error() {
         when(eventMetadataRepositoryMock.findById(anyString())).thenReturn(Mono.empty());
 
@@ -289,10 +310,33 @@ class EventMetadataServiceImplUT {
     }
 
     @Test
+    @DisplayName("Test for error on find all EventMetadata.")
     void findAllEventMetadata_should_return_error() {
         when(eventMetadataRepositoryMock.findAll()).thenReturn(Flux.empty());
 
         StepVerifier.create(sut.findAllEventMetadata())
+                .expectErrorSatisfies(error -> {
+                    assertThat(error).isInstanceOf(EventNotFoundException.class);
+                }).verify();
+    }
+
+    @Test
+    @DisplayName("Test for error on find all EventMetadata asc sorted by Year.")
+    void findAllEventMetadataByYearAsc_should_return_an_error() {
+        when(eventMetadataRepositoryMock.findAll()).thenReturn(Flux.empty());
+
+        StepVerifier.create(sut.findAllByOrderByYearAsc())
+                .expectErrorSatisfies(error -> {
+                    assertThat(error).isInstanceOf(EventNotFoundException.class);
+                }).verify();
+    }
+
+    @Test
+    @DisplayName("Test for error on find all EventMetadata desc sorted by Year.")
+    void findAllEventMetadataByYearDesc_should_return_an_error() {
+        when(eventMetadataRepositoryMock.findAll()).thenReturn(Flux.empty());
+
+        StepVerifier.create(sut.findAllByOrderByYearDesc())
                 .expectErrorSatisfies(error -> {
                     assertThat(error).isInstanceOf(EventNotFoundException.class);
                 }).verify();

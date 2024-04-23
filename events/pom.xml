@@ -8,11 +8,11 @@
     <parent>
         <groupId>de.kessel.history.events.archive</groupId>
         <artifactId>history-event-relationships</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>events</artifactId>
-    <version>${project.parent.version}</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>Events Metadata</name>
     <description>This modul contains the events information.</description>
 

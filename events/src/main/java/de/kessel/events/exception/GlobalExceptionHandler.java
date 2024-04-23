@@ -52,7 +52,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
                             ((PropertyValidationException) error).getErrorResponse().getStatus());
             case EventNotFoundException eventNotFoundException ->
                     Tuple.of(ErrorDetail.EVENT_METADATA_NOT_FOUND.getErrorCode(),
-                            String.format(ErrorDetail.EVENT_METADATAS_NOT_FOUND.getErrorMessage(), request.pathVariable("id")),
+                            String.format(ErrorDetail.EVENT_METADATA_NOT_FOUND.getErrorMessage(), request.pathVariable("id")),
                             ((EventNotFoundException) error).getErrorResponse().getStatus());
             case MissingBodyException missingBodyException ->
                     Tuple.of(ErrorDetail.REQUEST_BODY_IS_MISSING.getErrorCode(),

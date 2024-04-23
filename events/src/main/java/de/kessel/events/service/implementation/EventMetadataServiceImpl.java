@@ -13,7 +13,6 @@ import de.kessel.events.util.ErrorMessageUtil;
 import de.kessel.events.util.EventUtil;
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
@@ -23,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.text.ParseException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +55,6 @@ public class EventMetadataServiceImpl implements EventMetadataService {
                 .reference(referenceAsHtml)
                 .personId(eventMetadataRequestDto.getPersonId())
                 .locationId(eventMetadataRequestDto.getLocationId())
-                .epocheId(eventMetadataRequestDto.getEpocheId())
                 .scope(eventMetadataRequestDto.getScope())
                 .status(eventMetadataRequestDto.getStatus())
                 .topicId(eventMetadataRequestDto.getTopicId())
@@ -67,31 +66,140 @@ public class EventMetadataServiceImpl implements EventMetadataService {
         return eventMetadataRepository.save(eventMetadataEntity).map(EntityMapper::convertToEventMetadataResponseDto);
     }
 
-    @SneakyThrows
     @Override
-    public void createEventMetadatas(List<EventMetadataRequestDto> eventMetadataRequestDtoList) {
-        for (EventMetadataRequestDto requestDto : eventMetadataRequestDtoList) {
-            Mono<EventMetadataResponseDto> eventMetadataRequestDto = createEventMetadata(requestDto);
-        }
+    public Flux<EventMetadataResponseDto> createAllEventMetada(List<EventMetadataRequestDto> eventMetadataRequestDtos) {
+        List<EventMetadataEntity> eventMetadataEntities = eventMetadataRequestDtos.stream().map(EntityMapper::convertToEventMetadataEntity).toList();
+        return eventMetadataRepository.saveAll(eventMetadataEntities)
+                .map(EntityMapper::convertToEventMetadataResponseDto);
     }
 
     @Override
     public Mono<EventMetadataResponseDto> findEventMetadataById(String id) {
         return eventMetadataRepository.findById(id)
                 .map(EntityMapper::convertToEventMetadataResponseDto)
-                .switchIfEmpty(Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage(id,
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findAllEventMetadata() {
+        return eventMetadataRepository.findAll().map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    public Flux<EventMetadataResponseDto> findByYear(int year) {
+        return eventMetadataRepository.findByYear(year).map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findAllByOrderByYearAsc() {
+        return eventMetadataRepository.findAll()
+                .sort(Comparator.comparing(EventMetadataEntity::getYear))
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findAllByOrderByYearDesc() {
+        return eventMetadataRepository.findAll()
+                .sort(Comparator.comparing(EventMetadataEntity::getYear)
+                        .reversed())
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
                         ErrorDetail.EVENT_METADATA_NOT_FOUND),
                         ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
                                 ErrorDetail.EVENT_METADATA_NOT_FOUND))));
     }
 
     @Override
-    public Flux<EventMetadataResponseDto> findAllEventMetadata() {
-        return eventMetadataRepository.findAll().map(EntityMapper::convertToEventMetadataResponseDto)
+    public Flux<EventMetadataResponseDto> findByYearAndMonth(int year, int month) {
+        return eventMetadataRepository.findAllByYearAndMonth(year, month)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
                 .switchIfEmpty(Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
-                        ErrorDetail.EVENT_METADATAS_NOT_FOUND),
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
                         ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
-                                ErrorDetail.EVENT_METADATAS_NOT_FOUND))));
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearAndMonthAndDay(int year, int month, int day) {
+        return eventMetadataRepository.findByYearAndMonthAndDay(year, month, day)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearAndMonthOrderByMonthAsc(int year, int month) {
+        return eventMetadataRepository.findByYearOrderByMonthAsc(year, month)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearAndMonthOrderByMonthDesc(int year, int month) {
+        return eventMetadataRepository.findByYearAndMonthOrderByMonthDesc(year, month)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearAndMonthAndDayOrderByDayAsc(int year, int month, int day) {
+        return eventMetadataRepository.findByYearAndMonthAndDayOrderByDayAsc(year, month, day)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearAndMonthAndDayOrderByDayDesc(int year, int month, int day) {
+        return eventMetadataRepository.findByYearAndMonthAndDayOrderByDayDesc(year, month, day)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearBetweenOrderByYearAsc(int startYear, int endYear) {
+        return eventMetadataRepository.findByYearBetweenOrderByYearAsc(startYear, endYear)
+                .map(EntityMapper::convertToEventMetadataResponseDto)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+    }
+
+    @Override
+    public Flux<EventMetadataResponseDto> findByYearBetweenOrderByYearDesc(int startYear, int endYear) {
+        return findByYearBetweenOrderByYearDesc(startYear, endYear)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
     }
 
     @Override
@@ -100,7 +208,6 @@ public class EventMetadataServiceImpl implements EventMetadataService {
                 .flatMap(dbEvent -> {
                     dbEvent.setPersonId(eventMetadataRequestDto.getPersonId());
                     dbEvent.setLocationId(eventMetadataRequestDto.getLocationId());
-                    dbEvent.setEpocheId(eventMetadataRequestDto.getEpocheId());
                     dbEvent.setScope(eventMetadataRequestDto.getScope());
                     dbEvent.setStatus(eventMetadataRequestDto.getStatus());
                     dbEvent.setTopicId(eventMetadataRequestDto.getTopicId());
@@ -111,15 +218,20 @@ public class EventMetadataServiceImpl implements EventMetadataService {
                     dbEvent.setEventId(eventMetadataRequestDto.getEventId());
                     dbEvent.setComment(eventMetadataRequestDto.getComment());
                     return eventMetadataRepository.save(dbEvent).map(EntityMapper::convertToEventMetadataResponseDto);
-                });
+                })
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage(id,
+                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
     }
 
     @Override
     public Mono<Void> deleteEventMetadata(String id) {
-        return eventMetadataRepository.deleteById(id)
-                .switchIfEmpty(Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage(id,
-                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
-                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
-                                ErrorDetail.EVENT_METADATA_NOT_FOUND))));
+        return eventMetadataRepository.deleteById(id);
+    }
+
+    @Override
+    public Mono<Void> deleteAllEventMetadatas() {
+        return eventMetadataRepository.deleteAll();
     }
 }

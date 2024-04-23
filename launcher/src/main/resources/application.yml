@@ -1,21 +1,21 @@
 spring:
+  profiles:
+    active: dev
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
       - org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration
   application:
     name: History-Event-Service
-
-udemy:
-   mongodb:
-    replicaset:
-            name: docker-rs
-            username: admin
-            password: admin
-            primary: mongo1
-            port: 9042            
-            database: history-event-db
-            authentication-database: admin
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/history-event-db
+      database: history-event-db
+      port: 27017
+      host: localhost
+      auto-index-creation: true
+      username: admin
+      password: admin
 
 server:
   port: 8083
@@ -33,3 +33,5 @@ springdoc:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5p) %logger{4}.%M\\(%F:%L\\) - %yellow(%m%n)"
+#  level:
+#    root: DEBUG

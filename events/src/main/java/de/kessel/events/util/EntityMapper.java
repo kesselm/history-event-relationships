@@ -45,7 +45,6 @@ public class EntityMapper
         return EventMetadataEntity.builder()
                 .personId(eventMetadataRequestDto.getPersonId())
                 .locationId(eventMetadataRequestDto.getLocationId())
-                .epocheId(eventMetadataRequestDto.getEpocheId())
                 .scope(eventMetadataRequestDto.getScope())
                 .status(eventMetadataRequestDto.getStatus())
                 .topicId(eventMetadataRequestDto.getTopicId())
@@ -64,7 +63,6 @@ public class EntityMapper
         eventMetadataResponseDto.setId(eventMetadataEntity.getId());
         eventMetadataResponseDto.setPersonId(eventMetadataEntity.getPersonId());
         eventMetadataResponseDto.setLocationId(eventMetadataEntity.getLocationId());
-        eventMetadataResponseDto.setEpocheId(eventMetadataEntity.getEpocheId());
         eventMetadataResponseDto.setScope(eventMetadataEntity.getScope());
         eventMetadataResponseDto.setStatus(eventMetadataEntity.getStatus());
         eventMetadataResponseDto.setTopicId(eventMetadataEntity.getTopicId());

@@ -30,6 +30,9 @@ public class EventUtil {
         if (year < 0) {
             calendar.set(Calendar.ERA, GregorianCalendar.BC);
             result.append(" G");
+        } else {
+            calendar.set(Calendar.ERA, GregorianCalendar.AD);
+            result.append(" G");
         }
         calendar.set(Calendar.YEAR, Math.abs(year));
 

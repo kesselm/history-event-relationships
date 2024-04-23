@@ -5,7 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ErrorConstants {
 
-    public static final String EVENT_METADATAS_NOT_FOUND_MESSAGE = "No EventMetadata could be found.";
     public static final String TRANSLATION_NOT_FOUND_MESSAGE = "Translation not found with ID: %s";
     public static final String REQUEST_MISSING_PROPERTY_MESSAGE = "Text property is missing.";
     public static final String REQUEST_NO_EVENT_CREATED_MESSAGE = "Event could not be created.";

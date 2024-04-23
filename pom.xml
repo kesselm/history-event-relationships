@@ -14,7 +14,7 @@
 
     <groupId>de.kessel.history.events.archive</groupId>
     <artifactId>history-event-relationships</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>Parent - History events relationship archive</name>
     <description>An application to store historical events.</description>
 
@@ -96,12 +96,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.14.0</version>
             </dependency>
-            <dependency>
-                <groupId>de.kessel.history.events.archive</groupId>
-                <artifactId>events</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <scope>compile</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -153,6 +147,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
             </plugin>
         </plugins>
     </build>

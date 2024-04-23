@@ -10,7 +10,6 @@ import lombok.Data;
 public class EventMetadataResponseDto extends BaseDto {
     private String personId;
     private String locationId;
-    private String epocheId;
     private EventScope scope;
     private EventStatus status;
     private String topicId;
