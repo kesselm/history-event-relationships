@@ -11,11 +11,13 @@ public interface EventMetadataRepository extends ReactiveMongoRepository<EventMe
     Flux<EventMetadataEntity> findByYear(int yer);
     Flux<EventMetadataEntity> findAllByYearAndMonth(int year, int month);
     Flux<EventMetadataEntity> findByYearAndMonthAndDay(int year, int month, int day);
-    Flux<EventMetadataEntity> findByYearOrderByMonthAsc(int year, int month);
+    Flux<EventMetadataEntity> findByYearAndMonthOrderByMonthAsc(int year, int month);
     Flux<EventMetadataEntity> findByYearAndMonthOrderByMonthDesc(int year, int month);
     Flux<EventMetadataEntity> findByYearAndMonthAndDayOrderByDayAsc(int year, int month, int day);
     Flux<EventMetadataEntity> findByYearAndMonthAndDayOrderByDayDesc(int year, int month, int day);
     Flux<EventMetadataEntity> findByYearBetweenOrderByYearAsc(int startYear, int endYear);
     Flux<EventMetadataEntity> findByYearBetweenOrderByYearDesc(int startYear, int endYear);
+    Flux<EventMetadataEntity> findByYearAndMonthOrderByDayAsc(int year, int month);
+    Flux<EventMetadataEntity> findByYearAndMonth(int year, int month);
 
 }

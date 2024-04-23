@@ -11,7 +11,7 @@ import java.util.*;
 public class EventUtil {
 
     public static String createDate(int year, int month, int day, Locale locale) {
-        GregorianCalendar calendar = new GregorianCalendar(locale);
+        Calendar calendar = Calendar.getInstance(locale);
         var result = new StringBuilder();
 
         if (day > 0) {
@@ -19,7 +19,7 @@ public class EventUtil {
             result.append("d.");
         }
 
-        if (month > 0) {
+        if (month > -1) {
             calendar.set(Calendar.MONTH, month);
             result.append(" MMMM ");
         }

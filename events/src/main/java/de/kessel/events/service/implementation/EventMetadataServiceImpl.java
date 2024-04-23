@@ -145,12 +145,12 @@ public class EventMetadataServiceImpl implements EventMetadataService {
 
     @Override
     public Flux<EventMetadataResponseDto> findByYearAndMonthOrderByMonthAsc(int year, int month) {
-        return eventMetadataRepository.findByYearOrderByMonthAsc(year, month)
-                .map(EntityMapper::convertToEventMetadataResponseDto)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
-                        ErrorDetail.EVENT_METADATA_NOT_FOUND),
-                        ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
-                                ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
+        return eventMetadataRepository.findByYearAndMonthOrderByMonthAsc(year,month)
+                    .map(EntityMapper::convertToEventMetadataResponseDto)
+                    .switchIfEmpty(Mono.defer(() -> Mono.error(new EventNotFoundException(ErrorMessageUtil.getErrorMessage("",
+                            ErrorDetail.EVENT_METADATA_NOT_FOUND),
+                            ErrorMessageUtil.getCustomErrorResponse(HttpStatus.NO_CONTENT,
+                                    ErrorDetail.EVENT_METADATA_NOT_FOUND)))));
     }
 
     @Override

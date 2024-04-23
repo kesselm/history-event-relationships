@@ -52,7 +52,7 @@ class EventMetadataServiceImplUT {
     @Test
     @DisplayName("Test for year AD for germany.")
     void test_should_return_just_a_year() {
-        var year = EventUtil.createDate(2024, 0, 0, Locale.GERMANY);
+        var year = EventUtil.createDate(2024, -1, -1, Locale.GERMANY);
 
         assertThat(year).isEqualTo("2024 n. Chr.");
     }
@@ -60,7 +60,7 @@ class EventMetadataServiceImplUT {
     @Test
     @DisplayName("Test for year BC for germany.")
     void test_should_return_just_a_negativ_year_in_german() {
-        var year = EventUtil.createDate(-210, 0, 0, Locale.GERMANY);
+        var year = EventUtil.createDate(-210, -1, -1, Locale.GERMANY);
 
         assertThat(year).isEqualTo("210 v. Chr.");
     }
@@ -68,7 +68,7 @@ class EventMetadataServiceImplUT {
     @Test
     @DisplayName("Test for year BC for english.")
     void test_should_return_just_a_negativ_year_in_english() {
-        var year = EventUtil.createDate(-210, 0, 0, Locale.ENGLISH);
+        var year = EventUtil.createDate(-210, -1, -1, Locale.ENGLISH);
 
         assertThat(year).isEqualTo("210 BC");
     }
